@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .quiz-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    #question {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    #submit {
+      margin-top: 20px;
+    }
+
+    #result {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quiz">
+    <h3 id="question"></h3>
+    <label>
+      <input type="radio" name="answer" id="a">
+      <span id="a_text"></span>
+    </label>
+    <label>
+      <input type="radio" name="answer" id="b">
+      <span id="b_text"></span>
+    </label>
+    <label>
+      <input type="radio" name="answer" id="c">
+      <span id="c_text"></span>
+    </label>
+    <label>
+      <input type="radio" name="answer" id="d">
+      <span id="d_text"></span>
+    </label>
+    <button id="submit">Submit</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "Which language runs in a web browser?",
+        a: "Java",
+        b: "C",
+        c: "Python",
+        d: "JavaScript",
+        correct: "d",
+      },
+      {
+        question: "What does CSS stand for?",
+        a: "Central Style Sheets",
+        b: "Cascading Style Sheets",
+        c: "Cascading Simple Sheets",
+        d: "Cars SUVs Sailboats",
+        correct: "b",
+      },
+      {
+        question: "What does HTML stand for?",
+        a: "Hypertext Markup Language",
+        b: "Hypertext Markdown Language",
+        c: "Hyperloop Machine Language",
+        d: "Helicopters Terminals Motorboats Lamborginis",
+        correct: "a",
+      },
+      {
+        question: "What year was JavaScript launched?",
+        a: "1996",
+        b: "1995",
+        c: "1994",
+        d: "none of the above",
+        correct: "b",
+      }
+    ];
+
+    const quizContainer = document.getElementById("quiz");
+    const questionElement = document.getElementById("question");
+    const optionA = document.getElementById("a");
+    const optionB = document.getElementById("b");
+    const optionC = document.getElementById("c");
+    const optionD = document.getElementById("d");
+    const optionAText = document.getElementById("a_text");
+    const optionBText = document.getElementById("b_text");
+    const optionCText = document.getElementById("c_text");
+    const optionDText = document.getElementById("d_text");
+    const submitButton = document.getElementById("submit");
+    const resultElement = document.getElementById("result");
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const currentQuiz = quizData[currentQuestion];
+      questionElement.textContent = currentQuiz.question;
+      optionAText.textContent = currentQuiz.a;
+      optionBText.textContent = currentQuiz.b;
+      optionCText.textContent = currentQuiz.c;
+      optionDText.textContent = currentQuiz.d;
+    }
+
+    function getSelectedOption() {
+      const options = document.getElementsByName("answer");
+      let selectedOption = undefined;
+      options.forEach((option) => {
+        if (option.checked) {
+          selectedOption = option.id;
+        }
+      });
+      return selectedOption;
+    }
+
+    function deselectOptions() {
+      const options = document.getElementsByName("answer");
+      options.forEach((option) => {
+        option.checked = false;
+      });
+    }
+
+    submitButton.addEventListener("click", () => {
+      const selectedOption = getSelectedOption();
+
+      if (selectedOption) {
+        if (selectedOption === quizData[currentQuestion].correct) {
+          score++;
+        }
+
+        currentQuestion++;
+        deselectOptions();
+
+        if (currentQuestion < quizData.length) {
+          loadQuestion();
+        } else {
+          quizContainer.style.display = "none";
+          resultElement.textContent = `You scored ${score} out of ${quizData.length} questions.`;
+          resultElement.style.display = "block";
+          const reloadButton = document.createElement("button");
+          reloadButton.textContent = "Reload Quiz";
+          reloadButton.addEventListener("click", () => {
+            window.location.reload();
+          });
+          resultElement.appendChild(reloadButton);
+          resultElement.style.marginTop = "20px";
+          resultElement.style.fontSize = "18px";
+          resultElement.style.fontWeight = "bold";
+        }
+      }
+    });
+
+    loadQuestion();
+  </script>
+</body>
+</html>
